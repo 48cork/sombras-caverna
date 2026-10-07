@@ -1,0 +1,20 @@
+.perspective-screen { box-sizing:border-box; max-width:680px; margin:0 auto; padding:24px 22px 36px; min-height:70svh; display:grid; align-content:center; color:#192e2a; background:#f5f2e8; }
+.perspective-screen section { max-width:570px; margin:auto; }
+.perspective-screen h1 { font-size:clamp(1.6rem,5vw,2.2rem); margin:12px 0 18px; line-height:1.15; }
+.perspective-screen h1:focus { outline:none; }
+.perspective-screen p { font-size:1.05rem; line-height:1.5; margin:0 0 16px; }
+.perspective-portrait { width:144px; height:144px; margin:0 auto 18px; }
+.perspective-portrait svg { display:block; width:100%; height:100%; max-width:none; }
+.perspective-screen .perspective-button { display:block; width:100%; min-height:48px; padding:12px 18px; border:2px solid #173e35; border-radius:8px; background:#173e35; color:#fff; font:700 1.05rem/1.4 system-ui; cursor:pointer; }
+.perspective-button:focus-visible { outline:3px solid #9b4c16; outline-offset:4px; }
+.perspective-pass { font-weight:700; }
+.perspective-bar { position:sticky; top:0; z-index:20; box-sizing:border-box; display:flex; align-items:center; gap:12px; min-height:58px; padding:8px max(16px,calc((100% - 1120px)/2)); background:#173e35; color:#fff; font:1rem/1.3 system-ui; }
+.perspective-bar strong { font-size:1.15rem; }
+.perspective-bar.perspective-second { background:#663c25; }
+.perspective-mini { display:block; width:40px; height:40px; flex:none; }
+.perspective-mini svg { width:100%; height:100%; display:block; }
+@keyframes perspective-once { 50% { box-shadow:inset 0 0 0 4px #fff; } }
+.perspective-flash { animation:perspective-once 700ms 1; }
+@media(prefers-reduced-motion:reduce) { .perspective-flash { animation:none; } }
+@media(max-width:480px) { .perspective-screen { padding:18px 20px 24px; } .perspective-portrait { width:112px; height:112px; margin-bottom:12px; } .perspective-screen p { font-size:1rem; line-height:1.45; margin-bottom:14px; } }
+@media print { .perspective-bar { position:static; } }
