@@ -62,5 +62,6 @@
   ],
   "errors": [],
   "target": "Pacote público local, http://127.0.0.1:8039",
-  "sourceCommit": "f53e31326ec007ad0289c1c190f19c8e208a075e"
+  "sourceCommit": "f53e31326ec007ad0289c1c190f19c8e208a075e",
+  "scope": "Verificação integral do pacote anterior f53e313. Atualização pontual: apenas título da cena 4; sintaxe, tipos e testes executados no novo commit de origem. Título público será conferido após o Pages."
 }

@@ -28,7 +28,7 @@ export const scenes = [
   { id: 'video', title: 'O VÍDEO', time: '22h', text: 'O celular vibra. No grupo “Notícias da Serra”, um vídeo mostra peixes mortos. Uma voz diz: “Não bebam essa água. A prefeitura está escondendo.” A avó já dorme. A torneira da cozinha pinga.' },
   { id: 'fair', title: 'A FEIRA', time: 'Manhã', text: 'Na bodega, todo mundo fala do vídeo. A água mineral dobrou de preço. Valdir oferece carro-pipa. Celina comenta um balde visto às 5h20 na trilha leste. Damião repete: “Zé mexeu na água”. Seu Zé já brigou pelo acesso ao barco. A coincidência de lugar e horário passou a parecer responsabilidade; ninguém na feira viu o conteúdo do balde.' },
   { id: 'sources', title: 'AS FONTES', time: 'Tarde', text: 'Lia tem a tarde. Dá tempo de consultar até duas fontes. Cada uma conta apenas o que viu ou verificou.' },
-  { id: 'others', title: 'A COMUNIDADE REAGE AO QUE CIRCULOU', time: 'Depois', text: 'A diretora decide como conduzir a merenda. Dona Rita procura proteger a casa. Seu Zé responde às suspeitas. As decisões deles também mudam os rumos da conversa.' },
+  { id: 'others', title: 'ENQUANTO ISSO, OUTRAS PESSOAS AGEM', time: 'Depois', text: 'A diretora decide como conduzir a merenda. Dona Rita procura proteger a casa. Seu Zé responde às suspeitas. As decisões deles também mudam os rumos da conversa.' },
   { id: 'switch', title: 'TROQUE DE LUGAR', time: 'Manhã seguinte', text: 'Kaique espera uma corrida que ajuda a pagar as peças da moto. Antes de sair, precisa decidir se responde ao vídeo que voltou. Nando, seu primo, foi o primeiro destinatário. O celular guarda o original e duas respostas dele; as consultas de Lia não estão aqui.' },
   { id: 'public', title: 'FALAR EM PÚBLICO', time: 'Mais tarde', text: 'Na rádio, ao vivo.' }
 ];
