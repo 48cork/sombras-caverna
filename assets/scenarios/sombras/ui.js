@@ -1,3 +1,5 @@
+import { beliefChoices, beliefText, evidenceForLia, priorStatements, correctionOptions } from './reflection.js';
+import { narrativePanel } from './narrative.js';
 import { escapeHTML as e } from '../../js/ui.js';
 import { choices, debrief, lenses, scenes, sources } from './content.js';
 import { ending } from './ending.js';
@@ -9,7 +11,7 @@ function phoneMessages(state) {
   const w = state.world;
   const location = w.reach >= 4 ? 'A conversa chegou a diferentes partes da cidade.' : w.reach === 3 ? 'Na escola, perguntam se a merenda é segura.' : w.reach === 2 ? 'Na feira, repetem o que ouviram sobre o vídeo.' : w.reach === 1 ? 'Na rua, alguém comenta o vídeo.' : 'No grupo da família, a conversa continua.';
   const messages = ['Notícias da Serra · vídeo de peixes mortos', 'Voz no vídeo: “Não bebam essa água. A prefeitura está escondendo.”'];
-  if (w.videoVersion === 'v3-urgente') messages.push('Grupo da família · “URGENTE”');
+  if (state.history.some(item => item.scene === 1 && item.choice === 'A')) messages.push('Grupo da família · “URGENTE”');
   if (state.history.some(item => item.scene === 1 && item.choice === 'B')) messages.push('Lia perguntou quem gravou e onde. “Chegou aqui assim”, respondeu Damião.');
   if (w.videoVersion === 'explicado') messages.push('Grupo · “Então foi você!”');
   if (state.history.some(item => item.scene === 6 && item.choice !== 'D')) messages.push(`Lia falou em público: ${state.history.find(item => item.scene === 6)?.label}.`);
@@ -20,9 +22,38 @@ function choicesFor(state) {
   const key = choiceTitle(state);
   return (choices[key] || []).map(([id, label, description]) => {
     let detail = description;
-  if (key === 'public' && id === 'C') detail = state.facts.length ? `Você dirá somente estes fatos: ${state.facts.join(' ')}` : 'Você ainda não consultou fontes; não há fatos verificados para listar.';
-    return `<button class="sb-choice" data-sb-action="choose" data-choice="${id}"><span class="sb-choice-title">${e(label)}</span><span class="sb-choice-detail">${e(detail)}</span></button>`;
+  if (key === 'public' && id === 'C') detail = state.facts.length ? `Você apresentará estas fontes e seus limites: ${state.facts.join(' ')}` : 'Você ainda não consultou fontes; não há fatos verificados para listar.';
+    return `<button class="sb-choice" data-sb-action="choose" data-choice="${id}" ${(state.scene === 1 && !state.initialInterpretation) || (state.scene === 5 && !["original", "forwarded"].every(item => state.interactions.includes(item))) ? "disabled" : ""}><span class="sb-choice-title">${e(state.retraction && key === 'public' && id === 'C' ? 'Retratar a fala anterior e publicar a comparação' : label)}</span><span class="sb-choice-detail">${e(detail)}</span></button>`;
   }).join('');
+}
+
+const excerpt = text => text.length > 180 ? text.slice(0, 177) + '…' : text;
+
+function select(id, label, options, selected) {
+  return `<label class="sb-label" for="${id}">${e(label)}</label><select id="${id}" class="sb-select">${options.map(([value, text]) => `<option value="${e(value)}" ${value === selected ? 'selected' : ''}>${e(text)}</option>`).join('')}</select>`;
+}
+
+function initialPanel(state) {
+  return `<section class="sb-events"><h2>Antes de responder ao aviso</h2><p>Lia pensa no que essa imagem permite dizer. Como ela está interpretando a mensagem?</p>${beliefChoices.map(([id, text]) => `<button class="sb-button" data-sb-action="initial" data-belief="${id}" aria-pressed="${state.initialInterpretation?.belief === id}">${e(text)}</button>`).join('')}${state.initialInterpretation ? `<p>Lia registrou: ${e(state.initialInterpretation.text)}.</p>` : '<p>Escolha uma interpretação, inclusive suspender o julgamento, antes de agir.</p>'}</section>`;
+}
+
+function revisionPanel(state) {
+  const evidence = evidenceForLia(state);
+  const selected = evidence.find(item => item.id === state.reflectionDraft.revisionEvidence) || evidence[0];
+  const latest = state.revisions.at(-1);
+  return `<section class="sb-events"><h2>O que Lia sustenta agora?</h2><p>Antes: ${e(beliefText(state.belief))}. Ela pode manter, restringir ou mudar essa interpretação.</p>${select('revision-belief', 'Como fica a interpretação?', beliefChoices, state.reflectionDraft.revisionBelief || state.belief)}${select('revision-evidence', 'Que informação recebida pesou nessa decisão?', evidence.map(item => [item.id, item.label]), selected?.id)}${selected ? `<p class="sb-fact">${e(excerpt(selected.text))}</p>` : ''}<button class="sb-button" data-sb-action="revise" ${selected ? '' : 'disabled'}>Registrar a interpretação e sua base</button>${latest ? `<p>Última decisão: ${e(latest.move)} a interpretação com base em ${e(evidence.find(item => item.id === latest.evidence.id)?.label || latest.evidence.id)}.</p>` : ''}</section>`;
+}
+
+function retractionPanel(state) {
+  const statements = priorStatements(state);
+  if (!statements.length) return '<section class="sb-events"><p>Lia não fez uma afirmação pública para corrigir; pode apresentar as informações recebidas.</p></section>';
+  const statement = statements.find(item => item.id === state.reflectionDraft.statement) || statements[0];
+  const evidence = evidenceForLia(state).filter(item => correctionOptions(statement, item).length);
+  const selected = evidence.find(item => item.id === state.reflectionDraft.evidence) || evidence[0];
+  const changes = correctionOptions(statement, selected);
+  const change = changes.find(item => item.id === state.reflectionDraft.change) || changes[0];
+  const prepared = state.retraction;
+  return `<section class="sb-events"><h2>Corrigir uma fala anterior</h2>${select('retraction-statement', 'Qual afirmação estou corrigindo?', statements.map(item => [item.id, item.text]), statement.id)}<p>${e(statement.text)}</p>${selected ? `${select('retraction-evidence', 'Qual informação recebida sustenta a correção?', evidence.map(item => [item.id, item.label]), selected.id)}<p class="sb-fact">${e(excerpt(selected.text))}</p>${select('retraction-change', 'O que mudou, e sobre qual questão?', changes.map(item => [item.id, item.label]), change.id)}<p>${e(change.text)}</p><button class="sb-button" data-sb-action="retract">Preparar esta correção</button>` : '<p>Ainda não chegou a Lia uma informação pertinente a essa correção.</p>'}${prepared ? `<p>Correção preparada: ${e(prepared.statement.text)} ${e(prepared.change.text)} Base: ${e(evidenceForLia(state).find(item => item.id === prepared.evidence.id)?.label || prepared.evidence.id)}</p><p>Será dirigida a ${e(prepared.statement.audience)} e ao público da fala, se a comparação for publicada e ouvida. Não há confirmação de leitura dos encaminhamentos.</p>` : ''}</section>`;
 }
 
 function phoneSources(state) {
@@ -31,11 +62,11 @@ function phoneSources(state) {
     const text = used ? state.facts[state.sources.indexOf(source.id)] : '';
     const disabled = used || state.sources.length >= 2;
     return `<article class="sb-source"><h3>${e(source.name)}</h3><button class="sb-button" data-sb-action="consult" data-source="${source.id}" ${disabled ? 'disabled' : ''}>${used ? 'Fonte consultada' : e(source.label)}</button>${used ? `<p class="sb-fact">${e(text)}</p>` : ''}</article>`;
-  }).join('')}</div><label class="sb-label" for="source-note">O que você sabe agora que não sabia ontem à noite? (opcional)</label><textarea id="source-note" rows="2" maxlength="800" placeholder="Escreva suas palavras; ficam só nesta aba.">${e(state.notes.source)}</textarea><button class="sb-primary" data-sb-action="finish-sources" ${state.sources.length ? '' : 'disabled'}>Ir para a próxima cena</button></section>`;
+  }).join('')}</div>${revisionPanel(state)}<label class="sb-label" for="source-note">O que você sabe agora que não sabia ontem à noite? (opcional)</label><textarea id="source-note" rows="2" maxlength="800" placeholder="Escreva suas palavras; ficam só nesta aba.">${e(state.notes.source)}</textarea><button class="sb-primary" data-sb-action="finish-sources" ${state.sources.length ? '' : 'disabled'}>Ir para a próxima cena</button></section>`;
 }
 
 function chain() {
-  return `<section class="sb-chain" aria-labelledby="chain-heading"><h2 id="chain-heading">A cadeia do vídeo</h2><ol><li><strong>v1 · 5h40</strong><span>Imagens de peixes mortos. “Olha isso.”</span></li><li><strong>v2</strong><span>As imagens circulam com a frase: “Não bebam essa água.”</span></li><li><strong>v3</strong><span>Uma voz acrescenta: “A prefeitura está escondendo.”</span></li></ol><p>Você não sabe quem acrescentou cada parte.</p></section>`;
+  return `<section class="sb-chain"><h2>O celular de Kaique</h2><p>O original foi enviado às 5h40, antes da noite da primeira mensagem. As cópias retornaram por Nando. Abra as mensagens para comparar o enquadramento, a legenda e a voz.</p><p>A condição da água não é determinada pela autoria da voz.</p></section>`;
 }
 
 function handoff(state) {
@@ -46,7 +77,7 @@ function handoff(state) {
 function sceneScreen(state) {
   const scene = scenes[state.scene - 1];
   const role = state.scene === 5 ? 'Kaique · você' : 'Lia · você';
-  const narrative = `<section class="sb-dialogue"><p class="sb-speaker">${role}${state.scene === 5 ? ' · mototaxista' : ' · estudante de História'}</p><h1 id="screen-title" tabindex="-1">${e(scene.title)}</h1><p class="sb-lead">${e(scene.text)}</p>${state.scene === 1 ? '<p class="sb-context">Serra do Vento · outubro</p>' : ''}</section>`;
+  const narrative = `<section class="sb-dialogue"><p class="sb-speaker">${role}${state.scene === 5 ? ' · mototaxista' : ' · estudante de História'}</p><h1 id="screen-title" tabindex="-1">${e(scene.title)}</h1><p class="sb-lead">${e(state.scene === 6 ? "Lia volta à conversa. Precisa decidir o que dizer, a quem e com que base." : scene.text)}</p>${state.scene === 1 ? '<p class="sb-context">Serra do Vento · outubro</p>' : ''}</section>`;
   let panel = phoneMessages(state);
   let interaction = '';
   if (state.scene === 3) interaction = phoneSources(state);
@@ -57,14 +88,14 @@ function sceneScreen(state) {
   else if (state.scene === 5) { panel = chain(); interaction = `<section class="sb-actions" aria-labelledby="action-heading"><h2 id="action-heading">O que você faz?</h2><div class="sb-choice-grid">${choicesFor(state)}</div></section>`; }
   else if (state.scene === 6) {
     const publicLabel = state.context === 2 || state.context === 4 ? 'Na Rádio Serra FM, ao vivo.' : 'No grupo “Notícias da Serra”, onde agora todos leem.';
-    interaction = `<p class="sb-channel">${publicLabel}</p><label class="sb-label" for="public-note">Se quiser, escreva o que diria (opcional)</label><textarea id="public-note" rows="2" maxlength="800" placeholder="Sua formulação fica só nesta aba.">${e(state.notes.public)}</textarea><section class="sb-actions" aria-labelledby="action-heading"><h2 id="action-heading">O que você faz?</h2><div class="sb-choice-grid">${choicesFor(state)}</div></section>`;
+    interaction = `<p class="sb-channel">${publicLabel}</p>${revisionPanel(state)}${retractionPanel(state)}<label class="sb-label" for="public-note">Se quiser, escreva o que diria (opcional)</label><textarea id="public-note" rows="2" maxlength="800" placeholder="Sua formulação fica só nesta aba.">${e(state.notes.public)}</textarea><section class="sb-actions" aria-labelledby="action-heading"><h2 id="action-heading">O que você faz?</h2><div class="sb-choice-grid">${choicesFor(state)}</div></section>`;
   } else interaction = `<section class="sb-actions" aria-labelledby="action-heading"><h2 id="action-heading">O que você faz?</h2><div class="sb-choice-grid">${choicesFor(state)}</div></section>`;
-  return `<main id="main" class="sb-shell"><header class="sb-hud"><div><span class="sb-mark">SOMBRAS</span><span class="sb-edition">v0.1 experimental</span></div><p class="sb-time">${e(scene.time)} <span>· ${role}</span></p></header><div class="sb-layout">${panel}<div class="sb-main-panel">${narrative}${interaction}</div></div><p class="sb-footnote">Serra do Vento é fictícia · Experimento pedagógico</p></main>`;
+  return `<main id="main" class="sb-shell"><header class="sb-hud"><div><span class="sb-mark">SOMBRAS</span><span class="sb-edition">v0.2.1 narrativa · prévia</span></div><p class="sb-time">${e(scene.time)} <span>· ${role}</span></p></header><div class="sb-layout">${panel}<div class="sb-main-panel">${narrative}${narrativePanel(state, e)}${state.scene === 1 ? initialPanel(state) : ""}${interaction}</div></div><p class="sb-footnote">Serra do Vento é fictícia · Experimento pedagógico</p></main>`;
 }
 
 function finalScreen(state) {
   const result = ending(state);
-  return `<main id="main" class="sb-shell sb-ending"><header class="sb-hud"><div><span class="sb-mark">SOMBRAS</span><span class="sb-edition">v0.1 experimental</span></div><p class="sb-time">Três semanas depois · Lia</p></header><p class="sb-kicker">O mundo que ficou</p><h1 id="screen-title" tabindex="-1">${e(result.title)}</h1><p class="sb-lead">${e(result.description)}</p><div class="sb-ending-blocks">${result.blocks.map(block => `<article class="sb-ending-block"><h2>${e(block.title)}</h2><p>${e(block.text)}</p></article>`).join('')}</div><section class="sb-causal" aria-labelledby="causal-heading"><h2 id="causal-heading">Como este mundo foi produzido</h2><ol>${result.causes.map(item => `<li>${e(item)}</li>`).join('')}</ol></section><p class="sb-route">O mundo que ficou → Conversar → Reler pela Filosofia</p><p class="sb-prompt">Como você chegou a este mundo?</p><button class="sb-primary" data-sb-action="debrief">Continuar: conversar sobre a experiência →</button></main>`;
+  return `<main id="main" class="sb-shell sb-ending"><header class="sb-hud"><div><span class="sb-mark">SOMBRAS</span><span class="sb-edition">v0.2.1 narrativa · prévia</span></div><p class="sb-time">Três semanas depois · Lia</p></header><p class="sb-kicker">O mundo que ficou</p><h1 id="screen-title" tabindex="-1">${e(result.title)}</h1><p class="sb-lead">${e(result.description)}</p><div class="sb-ending-blocks">${result.blocks.map(block => `<article class="sb-ending-block"><h2>${e(block.title)}</h2><p>${e(block.text)}</p></article>`).join('')}</div><section class="sb-causal" aria-labelledby="causal-heading"><h2 id="causal-heading">Como este mundo foi produzido</h2><ol>${result.causes.map(item => `<li>${e(item)}</li>`).join('')}</ol></section><p class="sb-route">O mundo que ficou → Conversar → Reler pela Filosofia</p><p class="sb-prompt">Como você chegou a este mundo?</p><button class="sb-primary" data-sb-action="debrief">Continuar: conversar sobre a experiência →</button></main>`;
 }
 
 function debriefScreen(state) {

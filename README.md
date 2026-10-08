@@ -1,9 +1,13 @@
 # Sombras: a caverna no celular
 
-Versão v0.1 experimental. Arquivos de execução extraídos de sociedade, commit 3ba9a2f569b4e4992043d55670ca368783b4ac0f, com histórico independente.
+Revisão narrativa v0.2.1. Origem: `f53e31326ec007ad0289c1c190f19c8e208a075e`, em sociedade (privado). Este repositório mantém histórico independente e apenas os arquivos necessários ao jogo.
 
-Apenas o carregador e os módulos compartilhados foram reduzidos às funções usadas por SOMBRAS. Regras e conteúdo do cenário preservados. Revisão pedagógica e playtest humano pendentes.
+Jogar: https://48cork.github.io/sombras-caverna/
 
-Jogar: https://48cork.github.io/sombras-caverna/?cenario=sombras
+O início comum varia entre quatro contextos e evita repetir o anterior. Para testes docentes, acrescente `?contexto=1`, `2`, `3` ou `4`: o contexto permanece fixo ao recomeçar. Sem armazenamento, a prevenção de repetição funciona enquanto a página permanece aberta.
 
-Prévia local: `python3 -m http.server 8000`. Estado e respostas ficam na memória da aba.
+A narrativa mantém sete cenas, histórias dos personagens, investigação da margem leste e da suspeita contra Seu Zé. Lia e Kaique têm conhecimentos separados. Interpretação inicial, revisão e retratação dependem das informações recebidas; consultar duas fontes ou escolher uma fala cautelosa não concede bônus automático. A correção tem alcance limitado e preserva danos anteriores.
+
+Cena 4: “A comunidade reage ao que circulou”, com ações explícitas dos personagens.
+
+Prévia local: `python3 -m http.server 8039`. Estado e respostas ficam na aba. Testes automatizados abrangem os quatro contextos, as sete cenas e reinícios comuns/fixos, inclusive sem armazenamento. Novo teste com alunos ainda pendente: pedir que expliquem como a confusão começou, por que Seu Zé foi acusado e os motivos dos personagens.

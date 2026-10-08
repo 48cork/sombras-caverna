@@ -1,0 +1,66 @@
+{
+  "partidas": 4,
+  "report": [
+    {
+      "label": "desktop-contexto4",
+      "scenes": 7,
+      "status": "aprovado"
+    },
+    {
+      "label": "celular-dupla-contexto1",
+      "scenes": 7,
+      "status": "aprovado"
+    },
+    {
+      "label": "desktop-contexto3",
+      "scenes": 7,
+      "status": "aprovado"
+    },
+    {
+      "label": "celular-sem-lentes-contexto2",
+      "scenes": 7,
+      "status": "aprovado"
+    }
+  ],
+  "restarts": [
+    {
+      "label": "comum-com-armazenamento",
+      "before": 3,
+      "after": 4,
+      "status": "aprovado"
+    },
+    {
+      "label": "comum-sem-armazenamento",
+      "before": 4,
+      "after": 2,
+      "status": "aprovado"
+    },
+    {
+      "label": "fixo-1",
+      "before": 1,
+      "after": 1,
+      "status": "aprovado"
+    },
+    {
+      "label": "fixo-2",
+      "before": 2,
+      "after": 2,
+      "status": "aprovado"
+    },
+    {
+      "label": "fixo-3",
+      "before": 3,
+      "after": 3,
+      "status": "aprovado"
+    },
+    {
+      "label": "fixo-4",
+      "before": 4,
+      "after": 4,
+      "status": "aprovado"
+    }
+  ],
+  "errors": [],
+  "target": "Pacote público local, http://127.0.0.1:8039",
+  "sourceCommit": "f53e31326ec007ad0289c1c190f19c8e208a075e"
+}

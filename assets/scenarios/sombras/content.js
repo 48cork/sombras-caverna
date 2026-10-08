@@ -1,19 +1,19 @@
 export const contextFacts = {
   companhia: {
-    good: 'A companhia respondeu: “Estamos analisando.”',
-    partial: 'A companhia informou: “A água tratada está dentro do padrão.”'
+    good: 'A companhia respondeu: “Estamos analisando a água tratada; ainda não concluímos. O vídeo não veio com ponto de coleta.” A atendente anota a demanda da escola; não oferece uma garantia provisória.',
+    partial: 'A companhia informou: “A água tratada está dentro do padrão.” O boletim é da saída da estação, com captação a oeste, nesta manhã. Não avalia toda a margem nem cada reservatório das casas.'
   },
   laudo: {
-    good: 'O laudo indicava parâmetros normais.',
-    partial: 'O laudo indicava coliformes acima do limite no ponto 4, na margem leste, próximo ao loteamento.'
+    good: 'O laudo indicava parâmetros normais na saída da estação nesta manhã. Não era uma coleta no raso filmado nem em todas as casas.',
+    partial: 'O laudo indicava coliformes acima do limite no ponto 4, na margem leste, próximo ao loteamento, em coleta daquela manhã. Confirma alteração naquele ponto; não identifica responsável nem mede a água nas torneiras.'
   },
   ze: {
-    good: 'Seu Zé disse: “Morreu peixe no raso todo, foi o calor.”',
-    partial: 'Seu Zé disse: “Só morreu do lado do loteamento novo.”'
+    good: 'Seu Zé disse: “Morreu peixe no raso todo, acho que foi o calor.” Ele conta que outros pescadores viram peixes mortos nos rasos. É uma explicação baseada na experiência, ainda não uma análise da causa.',
+    partial: 'Seu Zé disse: “Eu só vi peixe morto do lado do loteamento novo.” Seu relato delimita o que viu; não demonstra que o loteamento ou uma pessoa causou a morte.'
   },
   acude: {
-    good: 'No açude, Lia viu peixes mortos no raso, água quente e sem cheiro.',
-    partial: 'No açude, Lia sentiu cheiro forte só na margem leste.'
+    good: 'No açude, Lia viu peixes mortos no raso, água quente e sem cheiro na enseada leste. Um pescador aponta outros rasos; Lia não os percorreu. A ausência de cheiro não comprova segurança da água.',
+    partial: 'No açude, Lia sentiu cheiro forte na enseada leste, perto da cerca do loteamento. Não viu despejo nem acompanhou a água até a captação a oeste. Sua visita não identifica a causa ou a segurança da água tratada.'
   }
 };
 
@@ -26,10 +26,10 @@ export const sources = [
 
 export const scenes = [
   { id: 'video', title: 'O VÍDEO', time: '22h', text: 'O celular vibra. No grupo “Notícias da Serra”, um vídeo mostra peixes mortos. Uma voz diz: “Não bebam essa água. A prefeitura está escondendo.” A avó já dorme. A torneira da cozinha pinga.' },
-  { id: 'fair', title: 'A FEIRA', time: 'Manhã', text: 'Na bodega, todo mundo fala do vídeo. A água mineral dobrou de preço. Valdir oferece carro-pipa. Alguém diz: “Isso é coisa do Seu Zé, que vive mexendo naquela água.”' },
+  { id: 'fair', title: 'A FEIRA', time: 'Manhã', text: 'Na bodega, todo mundo fala do vídeo. A água mineral dobrou de preço. Valdir oferece carro-pipa. Celina comenta um balde visto às 5h20 na trilha leste. Damião repete: “Zé mexeu na água”. Seu Zé já brigou pelo acesso ao barco. A coincidência de lugar e horário passou a parecer responsabilidade; ninguém na feira viu o conteúdo do balde.' },
   { id: 'sources', title: 'AS FONTES', time: 'Tarde', text: 'Lia tem a tarde. Dá tempo de consultar até duas fontes. Cada uma conta apenas o que viu ou verificou.' },
-  { id: 'others', title: 'OS OUTROS TAMBÉM JOGAM', time: 'Depois', text: 'As conversas seguem. A escola, a avó, Seu Zé e a rádio sentem os efeitos do que circulou.' },
-  { id: 'switch', title: 'TROQUE DE LUGAR', time: 'Manhã seguinte', text: 'Você é Kaique. Às 5h40, viu os peixes e gravou. Mandou ao primo: “olha isso”. Hoje o vídeo voltou com uma voz que não é sua.' },
+  { id: 'others', title: 'A COMUNIDADE REAGE AO QUE CIRCULOU', time: 'Depois', text: 'A diretora decide como conduzir a merenda. Dona Rita procura proteger a casa. Seu Zé responde às suspeitas. As decisões deles também mudam os rumos da conversa.' },
+  { id: 'switch', title: 'TROQUE DE LUGAR', time: 'Manhã seguinte', text: 'Kaique espera uma corrida que ajuda a pagar as peças da moto. Antes de sair, precisa decidir se responde ao vídeo que voltou. Nando, seu primo, foi o primeiro destinatário. O celular guarda o original e duas respostas dele; as consultas de Lia não estão aqui.' },
   { id: 'public', title: 'FALAR EM PÚBLICO', time: 'Mais tarde', text: 'Na rádio, ao vivo.' }
 ];
 
@@ -41,7 +41,7 @@ export const debrief = [
   'Quem ganhou e quem perdeu com o boato? Alguém o criou para ganhar?',
   'Duvidar de tudo teria resolvido?',
   'Havia na cidade um lugar onde todos pudessem conferir juntos?',
-  'Na sua partida, você agiu mais como dogmático, cético ou crítico? Em que momento?'
+  'Conte com suas palavras como a confusão começou, por que Seu Zé foi acusado e o que Rita, Damião e Kaique queriam preservar.'
 ];
 
 // Núcleos e obras mantêm o estatuto de rascunho da especificação §11.
@@ -66,8 +66,9 @@ export const choices = {
   fair: [
     ['A', 'Concordar que é perigoso e comprar água mineral', 'A avó passa a usar água mineral.'],
     ['B', 'Dizer: “Ninguém sabe ainda de onde veio esse vídeo”', 'Na feira, a dúvida pode ter um custo social.'],
-    ['C', 'Defender Seu Zé', '“Ele não tem nada com isso.”'],
-    ['D', 'Ficar calada e ouvir', 'Registrar o que as pessoas dizem.']
+    ['C', 'Contestar a acusação contra Seu Zé', '“O balde não prova o que ele fez.” Damião teme que isso desarme o aviso; responder pode custar confiança.'],
+    ['D', 'Ficar calada e ouvir', 'Registrar o que as pessoas dizem.'],
+    ['E', 'Repassar a suspeita contra Seu Zé', 'Avisar os compradores para que se protejam enquanto falta resposta; seu nome circulará ligado ao episódio.']
   ],
   others: [
     ['A', 'Levar o que você sabe à diretora', 'Ela decide sobre a merenda.'],
@@ -77,12 +78,13 @@ export const choices = {
   switch: [
     ['A', 'Gravar um novo vídeo', 'Explicar o que você viu e o que não disse.'],
     ['B', 'Apagar o vídeo do celular', 'O vídeo já circula fora do seu aparelho.'],
-    ['C', 'Ficar calado', 'Você teme ser culpado pelo que circula.']
+    ['C', 'Guardar o original e adiar a resposta', 'Atender a corrida agora; o vídeo alterado continuará sem sua comparação.'],
+    ['D', 'Enviar o original em reservado a Lia', 'Autorizar a comparação sem publicar seu nome; o grupo ainda não receberá a resposta.']
   ],
   public: [
-    ['A', 'Desmentir: “É boato, a água está boa”', 'Uma afirmação categórica.'],
-    ['B', 'Confirmar: “Não bebam”', 'Uma afirmação categórica.'],
-    ['C', 'Separar o que você verificou do que não sabe', 'A fala usa apenas os fatos que você conhece.'],
-    ['D', 'Não falar', 'Deixar que a conversa siga sem sua fala.']
+    ['A', 'Pedir retomada do uso da água tratada', 'Dar prioridade à merenda e ao orçamento; a retomada não resolve o que houve na margem.'],
+    ['B', 'Pedir suspensão temporária enquanto se verifica', 'Ganhar tempo para novas respostas; famílias e escola precisarão sustentar o custo da espera.'],
+    ['C', 'Publicar a comparação das fontes e cobrar resposta', 'Expor a investigação e enfrentar perguntas; uma explicação demorada pode alcançar menos gente.'],
+    ['D', 'Conversar em reservado antes de se expor', 'Preservar relações e preparar a fala; o público ainda não receberá sua resposta.']
   ]
 };

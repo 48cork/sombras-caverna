@@ -96,3 +96,8 @@ body.sombras .skip-link { color:#17282d; background:#fff; }
 }
 @media (prefers-reduced-motion:reduce) { .sb-shell *, .sb-shell *::before, .sb-shell *::after { scroll-behavior:auto !important; animation:none !important; transition:none !important; } }
 @media print { body.sombras { background:#fff; color:#111; } .sb-hud,.sb-phone,.sb-actions,.sb-primary,.sb-button,.sb-lens-nav,.sb-footnote { display:none !important; } .sb-shell,.sb-main-panel { padding:0; border:0; box-shadow:none; background:white; color:#111; } .sb-ending-block p,.sb-application p,.sb-debrief li,.sb-core { color:#111; } }
+
+.sb-select { display:block; box-sizing:border-box; width:100%; max-width:100%; min-height:44px; padding:.6rem; margin:.5rem 0 1rem; border:1px solid #a9c0ba; border-radius:6px; background:#20373b; color:#f7f0de; font:inherit; }
+.sb-select:focus-visible { outline:3px solid #ffc66a; outline-offset:3px; }
+.sb-events .sb-button { margin:.3rem .3rem .3rem 0; }
+.sb-events .sb-button[aria-pressed="true"] { border-color:#ffc66a; }
